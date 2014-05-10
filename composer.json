@@ -1,5 +1,21 @@
 {
-  "require": {
-      "hhvm": "3.0.1"
-  }
+	"name": "rdewilde/xhp-test",
+	"description": "Testing XHP",
+	
+	"autoload": {
+	    "classmap": ["lib/"]
+	}
+    
+	"repositories" : [
+		{
+			"url": "https://github.com/rdewilde/xhp",
+			"type": "git"
+		}
+	],
+	
+	"require": {
+		"facebook/xhp": "dev-master",
+		"rdewilde/xhp-base": "dev-master",
+		"rdewilde/xhp-twitter-bootstrap": "dev-master"
+	}
 }

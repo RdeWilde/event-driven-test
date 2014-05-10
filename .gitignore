@@ -1,0 +1,7 @@
+composer
+composr.phar
+installer
+npm-debug.log
+www.pid
+
+tmp/

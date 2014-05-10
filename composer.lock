@@ -1,0 +1,117 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "8bb80bb7ac9a042a88e1dd4546603942",
+    "packages": [
+        {
+            "name": "facebook/xhp",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rdewilde/xhp",
+                "reference": "9ecebc3c27abb66de256e2b3accddb8d9b1ac434"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "php-lib/"
+                ]
+            },
+            "description": "XHP is a PHP extension which augments the syntax of the language such that XML document fragments become valid PHP expressions.",
+            "time": "2014-05-03 19:32:42"
+        },
+        {
+            "name": "hhvm/xhp",
+            "version": "1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pvh/xhp.git",
+                "reference": "eb4f29b51456f6706d7073a28a52f65f3996ef11"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pvh/xhp/zipball/eb4f29b51456f6706d7073a28a52f65f3996ef11",
+                "reference": "eb4f29b51456f6706d7073a28a52f65f3996ef11",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2014-04-10 01:49:49"
+        },
+        {
+            "name": "rdewilde/xhp-base",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rdewilde/xhp-base.git",
+                "reference": "e63bc6b40c839693c7d33b7093a3a174b7760b22"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rdewilde/xhp-base/zipball/e63bc6b40c839693c7d33b7093a3a174b7760b22",
+                "reference": "e63bc6b40c839693c7d33b7093a3a174b7760b22",
+                "shasum": ""
+            },
+            "require": {
+                "hhvm/xhp": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "xhp/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Base elements for XHP",
+            "time": "2014-05-03 13:19:50"
+        },
+        {
+            "name": "rdewilde/xhp-twitter-bootstrap",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/RdeWilde/xhp-twitter-bootstrap.git",
+                "reference": "ef6b176d4fa5a70e285dc40922a80180f1fed1c6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/RdeWilde/xhp-twitter-bootstrap/zipball/ef6b176d4fa5a70e285dc40922a80180f1fed1c6",
+                "reference": "ef6b176d4fa5a70e285dc40922a80180f1fed1c6",
+                "shasum": ""
+            },
+            "require": {
+                "hhvm/xhp": "*",
+                "rdewilde/xhp-base": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "xhp/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Twitter Bootstrap implementation for XHP",
+            "time": "2014-05-04 07:10:19"
+        }
+    ],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "facebook/xhp": 20,
+        "rdewilde/xhp-base": 20,
+        "rdewilde/xhp-twitter-bootstrap": 20
+    },
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
+}
