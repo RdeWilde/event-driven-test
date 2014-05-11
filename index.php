@@ -3,16 +3,29 @@
 require 'vendor/autoload.php';
 require 'lib/.autoload.php';
 
+
 $bus = new HttpEventBus();
+
+
 $bus->onTimeout(function(EventBus $bus) {
+    echo 'Timeout!';
+
     $bus->end();
 });
+
+
 $bus->onRequest(function(HttpRequest $request) {
-        // "Call controller"
-    });
-$bus->onResponse(function(HttpResponse $response) {
-        $response->write('Hello there');
-    });
+    echo "Call controller";
+});
+
+    
+$bus->onResponse(function(HttpResponse $response) use ($bus) {
+    echo "Wrote to response..";
+    
+    $bus->end();
+});
+
+
 $bus->start();
 
 

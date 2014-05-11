@@ -12,6 +12,8 @@
     require_once('Request.php');
     require_once('Response.php');
     
+    require_once('StartEvent.php');
+    require_once('EndEvent.php');
     require_once('RequestEvent.php');
     require_once('ResponseEvent.php');
     require_once('TimeoutEvent.php');

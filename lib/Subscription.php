@@ -27,7 +27,7 @@ class Subscription {
     
     
     public function cancel() {
-        $this->__destruct();
+        // TODO Selfdestroy
     }
     
     public function confirm() {

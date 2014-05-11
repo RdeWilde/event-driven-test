@@ -1,14 +1,22 @@
 <?hh
 
-class Event<T> { // Listener<T>?
-    //protected   EventBus        $bus;
-    //protected   Vector<Trigger> $triggers;
+abstract class Event<T> { // Listener<T>?
+    protected Vector<Listener<T>> $subscribers = Vector{};
+    protected T $payload;
+    
+    public function getPayload() : T {
+        return $this->payload;
+    }
+    
+    public function subscribe(Listener<T> $listener) {
+        $this->subscribers[] = $listener;
+    }
  
-    //public function __construct(EventBus $bus) {
-    //    $this->bus = $bus;
-    //}
- 
-    public function fire(Listener<T> $listener, T $payload) {
-        $listener->notify($payload);
+    public function fire() {
+        foreach ($this->subscribers as $listener) {
+            $listener->notify(
+                    $this->getPayload()
+                );
+        }
     }
 }

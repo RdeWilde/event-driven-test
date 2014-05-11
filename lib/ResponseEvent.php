@@ -1,7 +1,7 @@
 <?hh
 
 class ResponseEvent extends Event<HttpResponse> {
-    public function fire(Listener $listener, HttpResponse $payload) {
-        $listener->notify($payload);
+    public function __construct(HttpResponse $response) {
+        $this->payload = $response;
     }
 }

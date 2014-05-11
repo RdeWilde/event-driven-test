@@ -4,27 +4,29 @@ class HttpEventBus extends EventBus {
     public function __construct() {
         parent::__construct();
         
-        parent::register('request', new RequestEvent());
-        parent::register('response', new ResponseEvent());
-        parent::register('timeout', new TimeoutEvent());
-        
         $request    = new HttpRequest(fopen('php://input', 'r'));
         $response   = new HttpResponse(fopen('php://output', 'a'));
         
-        parent::onStart(function($bus) use ($request, $response) {
-            $bus->watch(new TimeoutTrigger(5), new TimeoutEvent()); // TODO event aliassing usable without loosing type checking
+        parent::register('request',     new RequestEvent($request));
+        parent::register('response',    new ResponseEvent($response));
+        parent::register('timeout',     new TimeoutEvent($this));
+        
+        parent::onStart(function($bus) {
+            $bus->watch(new TimeoutTrigger(5.0), 'timeout'); // TODO event aliassing usable without loosing type checking
+            $bus->fire('request');
+            $bus->fire('response');
         });
     }
     
-    public function onRequest(callable $callable) : Subscription { // Should be (function(HttpRequest) but gives compilation error TODO
-        return parent::subscribe('request', new Listener($callable));
+    public function onRequest((function(HttpRequest) : bool) $callable) {
+        return parent::subscribe('request', new Listener<HttpRequest>($callable));
     }
     
-    public function onResponse(callable $callable) : Subscription { // Should be (function(HttpResponse but gives compilation error TODO
-        return parent::subscribe('response', new Listener($callable));
+    public function onResponse((function(HttpResponse) : bool) $callable) {
+        return parent::subscribe('response', new Listener<HttpResponse>($callable));
     }
     
-    public function onTimeout(callable $callable) : Subscription { // TODO
-        return parent::subscribe('timeout', new Listener($callable));
+    public function onTimeout((function(EventBus) : bool) $callable) {
+        return parent::subscribe('timeout', new Listener<EventBus>($callable));
     }
 }

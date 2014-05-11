@@ -1,6 +1,6 @@
 <?hh
 
-class TimeoutTrigger extends Trigger<?mixed> { // ?mixed should just be null or void, possible? TODO
+class TimeoutTrigger extends Trigger<EventBus> { // ?mixed should just be null or void, possible? TODO
     private double $start;
     private double $timeout;
     private double $end;
@@ -9,11 +9,7 @@ class TimeoutTrigger extends Trigger<?mixed> { // ?mixed should just be null or 
         $this->start = microtime(true);
     }
     
-    public async function evaluate() {
+    public async function evaluate() : bool {
         return (microtime(true) - $this->start > $this->timeout);
-    }
-    
-    public function fire(Listener $listener, ?mixed $payload) {
-        
     }
 }

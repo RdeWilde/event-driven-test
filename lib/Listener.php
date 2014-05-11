@@ -3,11 +3,11 @@
 class Listener<T> {
     private callable $callback;
     
-    public function __consutruct(callable $callable) {
+    public function __construct((function(T) : bool) $callable) { // TODO function(T $payload)
         $this->callback = $callable;
     }
     
     public function notify (T $payload) : bool {
-        $this->callback($payload);
+        return call_user_func($this->callback, $payload);
     }
 }

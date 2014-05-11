@@ -2,12 +2,11 @@
 
 abstract class Trigger<T> {
     protected   EventBus        $bus;
-    protected   Vector<Event>   $events;
+    protected   Vector<Event<T>>   $events;
     
-    public function addEvent(Event $event) {
+    public function addEvent(Event<T> $event) {
         $this->events[] = $event;
     }
     
-    abstract public /*async*/ function evaluate();
-    abstract public function fire(Listener $listener, T $payload); // Drop listener? TODO
+    abstract public /*async*/ function evaluate() : bool;
 }

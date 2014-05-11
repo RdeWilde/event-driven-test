@@ -1,7 +1,7 @@
 <?hh
 
-class TimeoutEvent extends Event<?mixed> {
-    public function fire(Listener $listener, ?mixed $payload) {
-        $listener->notify($payload);
+class TimeoutEvent extends Event<EventBus> {
+    public function __construct(EventBus $event) {
+        $this->payload = $event;
     }
 }

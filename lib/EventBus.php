@@ -1,41 +1,38 @@
-<?hh
+<?hh // strict
 
 class EventBus {
-    public static double $LOOP_TIMEOUT = 0.01; // TODO Replace with MIN_LOOP_TIME
-    // TODO MAX_LOOP_TIME?
+    public static double $LOOP_TIMEOUT  = 0.1; // TODO Replace with MIN_LOOP_TIME
+    public static double $MAX_LOOP_TIME = 15;
     
     protected   Map<string, Event>              $events         = Map{}; // Or make Event alias method on Event itself. Less configurable..
-    protected   Vector<Trigger>                 $triggers       = Vector{};
     protected   Vector<Watcher>                 $watchers       = Vector{};
-    protected   Vector<Subscription>            $subscriptions  = Vector{};
     protected   bool                            $finished       = false;
     
     
     public function __construct() {
-        // TODO Check if constructor was called or singleton pattern?
-        $this->register('start', new Event<EventBus>());
-        $this->register('end', new Event<EventBus>());
+        $this->register('start', new StartEvent($this));
+        $this->register('end',   new EndEvent($this));
     }
     
     
-    public function onStart(callable $callable) { // TODO typechecking
-        return $this->subscribe('end', new Listener($callable));
-    }
-    
-    public function onEnd() { // TODO typechecking
+    public function onStart((function(EventBus) : bool) $callable) { // TODO typechecking
         return $this->subscribe('start', new Listener($callable));
     }
     
+    public function onEnd((function(EventBus) : bool) $callable) { // TODO typechecking
+        return $this->subscribe('end', new Listener($callable));
+    }
     
-    public function watch(Trigger<T> $trigger, Event<T> $event) { // Require Event-object because of Generic typ checking
-        if (! $this->events->has($event)) {
-            return;
+    
+    public function watch(Trigger $trigger, string $alias) { // Require Event-object because of Generic typ checking
+        $event = $this->events->get($alias);
+        
+        if ($event !== null) {
+            $watcher = new Watcher($trigger, $event);
+            $this->watchers[] = $watcher;
+        
+            return $watcher;
         }
-        
-        $watchter = new Watcher($trigger, $event);
-        $this->watchers[] = $watcher;
-        
-        return $watchers;
     }
     
     
@@ -46,86 +43,73 @@ class EventBus {
     }
     
     
-    protected function subscribe(string $alias, Listener $listener) : ?Subscription { // Event $event
+    protected function subscribe(string $alias, Listener $listener) { // Event $event
         $event = $this->events->get($alias);
-        
+
         if ($event !== null) {
-            $subscription = new Subscription($this, $event, $listener);
-            $this->subscriptions[] = $subscription;
-            
-            return $subscription;
+            return $event->subscribe($listener);
         }
     }
     
     
-    protected function getWachtersByTrigger(Trigger $trigger) : Vector<Watcher> {
+    public function fire($alias) {
+        $event = $this->events->get($alias);
+        
+        if ($event !== null) {
+            $event->fire();
+        }
+    }
+    
+    
+    protected function getWatchersByTrigger(Trigger $trigger) : Vector<Watcher> {
         return $this->watchers->filter(function($watcher) use ($trigger) {
             return $watcher->getTrigger() === $trigger;
         });
     }
     
-    protected function getSubscribtionsByEvent($event) : Vector<Subscription> {
-        return $this->subscriptions->filter(function($subscription) use ($event) {
-            return $subscription->getEvent() === $event;
-        });
-    }
-    
     
     public function start() {
-        foreach ($this->subscriptions as $subscription) {
-            $subscription->confirm();
-        }
+        //foreach ($this->events as $event) {
+        //    $event->confirm();
+        //}
         
         return $this->loop();
     }
     
     
     public function loop() {
+        $start = microtime(true);
         
-        $startEvent = $this->events->get('start');
-        foreach ($this->subscriptions as $subscription) {
-            if ($subscription->getEvent() === $startEvent) {
-                $startEvent->fire($subscription. $this);
-            }
-        }
-            
+        $startEvent = $this->events->get('start')->fire();
         
         while (!$this->isFinished()) {
-            foreach ($this->triggers as $trigger) {
+            foreach ($this->watchers as $watcher) {
+                $trigger = $watcher->getTrigger();
                 if ($trigger->evaluate()) {
                     foreach ($this->getWatchersByTrigger($trigger) as $watcher) {
-                        $event = $watcher->getEvent();
-                        
-                        foreach ($this->getSubscribtionsByEvent($event) as $subscription) {
-                            $listener = $subscription->getListener();
-                            
-                            if ($listener !== null) {
-                                $event->fire($listener);
-                            }
-                        }
+                        $watcher->getEvent()->fire();
                     }
                 }
+            }
+            
+            if (microtime(true) - $start > static::$MAX_LOOP_TIME) {
+                $this->end();
             }
             
             // Hold your breath ...
             sleep(static::$LOOP_TIMEOUT);
         }
         
-        $endEvent = $this->events->get('end');
-        foreach ($this->subscriptions as $subscription) {
-            if ($subscription->getEvent() === $endEvent) {
-                $endEvent->fire($subscription. $this);
-            }
-        }
+        $endEvent = $this->events->get('end')->fire();
         
         return $this->end();
     }
     
     
     public function end() {
-        foreach ($this->subscriptions as $subscription) {
-            $subscription->cancel();
-        }
+        //foreach ($this->events as $event) {
+        //    $event->cancel();
+        //}
         
         $this->finished = true;
         
