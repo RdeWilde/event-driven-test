@@ -4,6 +4,9 @@ require 'vendor/autoload.php';
 require 'lib/.autoload.php';
 
 $bus = new HttpEventBus();
+$bus->onTimeout(function(EventBus $bus) {
+    $bus->end();
+});
 $bus->onRequest(function(HttpRequest $request) {
         // "Call controller"
     });

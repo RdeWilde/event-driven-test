@@ -13,6 +13,14 @@ class Subscription {
     }
     
     
+    public function getListener() : Listener {
+        return $this->listener;
+    }
+    
+    public function getEvent() : Event {
+        return $this->event;
+    }
+    
     public function isPersistent () : bool {
         return $this->persistent;
     }
@@ -20,5 +28,9 @@ class Subscription {
     
     public function cancel() {
         $this->__destruct();
+    }
+    
+    public function confirm() {
+        // Init for example
     }
 }
