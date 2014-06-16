@@ -1,0 +1,56 @@
+// Register    new event
+// Watch       new trigger to initiate event
+// Subscribe   to listen to events that are triggered
+
+$subject->onRequest()->register('route', new RouteEvent());     // Return ??? ???
+
+$routing = $subject->onRequest()->onRoute();                    // Return event
+c.q.
+$routing = $subject->on('request')->on('route');                // Return event
+
+// Trigger add self as trigger
+
+$watch = $routing->watch(URLMatchTrigger('/'));                 // Return new Watcher
+
+
+$watch->listen(function() : String { return 'Homepage'; });     // Return string
+
+
+$subject->onRequest(function() {
+    $subject->register('onRoute', new RouteEvent());
+});
+
+
+
+class RouteEvent {
+    static function hook(EventSubject $subject) {
+        $subject->register($this);
+    }
+}
+
+
+
+
+
+
+
+
+
+                                     
+                                      -< fires-
+                 /-evaluates >-------/-watches >-- TRIGGER
+                /                   /
+	EVENTBUS -< registers--EVENT
+                                    \                  
+                                     \-notifies >-- LISTENER
+                                      -< subscribe-
+
+onRequest()->subscribe(function($bus) {
+	$this->bus()->register('onRoute', new RouteEvent());
+});
+
+
+
+
+event.parent
+pass trigger or event (only)?
